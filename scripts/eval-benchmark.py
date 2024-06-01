@@ -76,10 +76,13 @@ def gpt4eval(pred, input_text, output_text, eval_aspect):
     return gpt4score
 
 
-def gpt4eval_with_csv_file(input_csv: str, output_csv: str) -> None:
+def gpt4eval_with_csv_file(input_csv_name: str, output_csv_name: str) -> None:
     # 暗黙的にdata/result以下にinputを期待している
-    input_file = Path(__file__).parent.parent / "data" / "result" / input_csv
-    output_file = Path(__file__).parent.parent / "data" / "result" / output_csv
+    input_file = Path(__file__).parent.parent / "data" / "result" / input_csv_name
+    output_file = Path(__file__).parent.parent / "data" / "result" / output_csv_name
+    # listに結果を溜めておく
+    sum_score = 0
+    length = 0
 
     with open(input_file, "r", encoding="utf-8") as csvfile, open(
         output_file, "w", newline="", encoding="utf-8"
@@ -104,10 +107,15 @@ def gpt4eval_with_csv_file(input_csv: str, output_csv: str) -> None:
 
             score = gpt4eval(pred, input_text, output_text, eval_aspect)
             row["score"] = score
+            if score is not None:
+                sum_score += score
+                length += 1
 
             writer.writerow(row)
-
+        mean_score = sum_score / length
     print(f"GPT-4による自動評価が完了しました。結果は {output_file} に出力されました。")
+    print(f"平均スコアは {mean_score} になりました")
+    print(f"評価不能な件数は {100-length} になりました")
 
 
 if __name__ == "__main__":
