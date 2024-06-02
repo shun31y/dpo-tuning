@@ -23,6 +23,9 @@ packaging = "^24.0"
 wandb = "^0.17.0"
 trl = "^0.8.6"
 python-dotenv = "^1.0.1"
+openai = "0.28"
+tenacity = "^8.3.0"
+fire = "^0.6.0"
 
 [build-system]
 requires = ["poetry-core"]
