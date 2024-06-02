@@ -1,45 +1,30 @@
-import torch
+import re
 import transformers
-import peft
-import accelerate
+from transformers import pipeline
+
 
 def format_prompt(text: str) -> str:
-    prompt = [
-        {
-            "speaker": "ユーザー",
-            "text": text
-        }
-    ]
-    prompt = [
-    f"{uttr['speaker']}: {uttr['text']}"
-    for uttr in prompt
-    ]
-    prompt = "<NL>".join(prompt)
-    prompt = (
-        prompt
-        + "<NL>"
-        + "システム: "
-    )
+    prompt = f"ユーザー: {text}\nシステム: "
     return prompt
 
 
-def generate_answer(text: str, tokenizer: transformers.models, model: transformers.models) -> str:
+def generate_answer(
+    text: str, tokenizer: transformers.models, model: transformers.models
+) -> str:
     prompt = format_prompt(text)
-    token_ids = tokenizer.encode(text, add_special_tokens=False, return_tensors='pt')
-    # generate prediction
-    with torch.no_grad():
-        output_ids = model.generate(
-            # 先にmodelをGPUに送っておくこと
-            token_ids.to(model.device),
-            do_sample=True,
-            max_new_tokens=1024,
-            temperature=0.7,
-            repetition_penalty=1.1,
-            pad_token_id=tokenizer.pad_token_id,
-            bos_token_id=tokenizer.bos_token_id,
-            eos_token_id=tokenizer.eos_token_id
-        )
-    # format output
-    output = tokenizer.decode(output_ids.tolist()[0][token_ids.size(1):])
-    output = output.replace("<NL>", "\n")
-    return output
+    generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+    output = generator(
+        prompt,
+        max_length=1024,
+        do_sample=True,
+        temperature=0.7,
+        top_p=0.9,
+        top_k=0,
+        repetition_penalty=1.1,
+        num_beams=1,
+        pad_token_id=tokenizer.pad_token_id,
+        num_return_sequences=1,
+    )
+    output_text = output[0]["generated_text"]
+    output_text = re.sub(re.escape(prompt), "", output_text)
+    return output_text
