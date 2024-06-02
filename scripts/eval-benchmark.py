@@ -2,12 +2,12 @@ import sys
 
 sys.path.append("..")
 import csv
-import openai
-from tenacity import retry, stop_after_attempt, wait_random_exponential
-from src import settings
 from pathlib import Path
-import fire
 
+import fire
+import openai
+from src import settings
+from tenacity import retry, stop_after_attempt, wait_random_exponential
 
 openai.api_key = settings.OPENAI_API_KEY  # OpenAI APIキーを設定してください
 
