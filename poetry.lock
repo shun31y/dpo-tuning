@@ -792,6 +792,20 @@ files = [
 ]
 
 [[package]]
+name = "demoji"
+version = "1.1.0"
+description = "Accurately remove and replace emojis in text strings"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "demoji-1.1.0-py3-none-any.whl", hash = "sha256:6d3256c909aea299e97fe984f827a2a060c2a8f8bfcbafa7ec9659967c5df50f"},
+    {file = "demoji-1.1.0.tar.gz", hash = "sha256:072efaeca725e6f63ab59d83abeb55b178842538ed9256455a82ebbd055ff216"},
+]
+
+[package.extras]
+ujson = ["ujson"]
+
+[[package]]
 name = "dill"
 version = "0.3.8"
 description = "serialize all of Python"
@@ -4820,4 +4834,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "cfa6d370807e4011d13c9fb4825468132cba09b30ce9cd583d13ecb2aee2246f"
+content-hash = "a3ea90f34287959a72d4e1ac9ef6000f779c1ab3a626483f781ec7a35d03135d"
